@@ -1,19 +1,20 @@
 import sqlite3
 from PyQt6 import uic
 from PyQt6.QtWidgets import QDialog, QMessageBox
+from ui_add_edit_form import Ui_MainWindow
 
 
-class AddEditCoffeeForm(QDialog):
+class AddEditCoffeeForm(QDialog, Ui_MainWindow):
     def __init__(self, coffee_id=None):
         super().__init__()
-        uic.loadUi("addEditCoffeeForm.ui", self)
+        self.setupUi(self)
         self.coffee_id = coffee_id
         self.saveButton.clicked.connect(self.save_data)
         if self.coffee_id:
             self.load_coffee_data()
 
     def load_coffee_data(self):
-        con = sqlite3.connect("coffee.sqlite")
+        con = sqlite3.connect("release/data/coffee.sqlite")
         cur = con.cursor()
         cur.execute("SELECT name, roast_degree, ground_or_beans, b, price, package_volume FROM coffee WHERE id=?", (self.coffee_id,))
         coffee = cur.fetchone()
@@ -34,7 +35,7 @@ class AddEditCoffeeForm(QDialog):
         price = self.priceEdit.text()
         package_volume = self.volumeEdit.text()
 
-        con = sqlite3.connect("coffee.sqlite")
+        con = sqlite3.connect("release/data/coffee.sqlite")
         cur = con.cursor()
 
         if self.coffee_id:
